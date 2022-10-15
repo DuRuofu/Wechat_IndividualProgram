@@ -1,0 +1,2 @@
+<!--pages/home/home.wxml-->
+<van-button type="primary" bind:click="getmqtt">按钮</van-button>
