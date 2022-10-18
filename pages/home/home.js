@@ -6,6 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    mqttData:""
 
   },
   grtmqtt(options) {
@@ -21,33 +22,23 @@ Page({
       password: '',
     }
 
-    const client = mqtt.connect('wx://mqtt.flespi.io:80', options)
- 
-    client.on('reconnect', (error) => {
-      console.log('正在重连:', error)
-    })
- 
-    client.on('error', (error) => {
-      console.log('连接失败:', error)
-    })
- 
+    let that = this
+    var client = mqtt.connect('wxs://www.duruofu.xyz:8084/mqtt', options) //你自己的域名
     client.on('connect', (e) => {
-      console.log('成功连接服务器')
-        //订阅一个主题
-      client.subscribe('Taichi-Maker-Sub-30:83:98:A3:1E:15', { qos: 0 }, function (err) {
-        if (!err) {
-          client.publish('123', 'Hello mqtt')
-          console.log("订阅成功")
-        }
- 
-      })
+      console.log('成功连接服务器!')
     })
-    //监听mq的返回
+    client.subscribe('esp8266', {
+      qos: 0
+    }, function (err) {
+      if (!err) {
+        console.log("订阅成功:esp8266")
+      }
+    })
     client.on('message', function (topic, message, packet) {
-      // message is Buffer
-      console.log("packet", packet.payload.toString())
-      client.end()
+      that.data.mqttData = packet.payload.toString()
+      console.log(that.data.mqttData)
     })
+
   },
 
   /**
