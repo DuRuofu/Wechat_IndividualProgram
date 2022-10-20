@@ -6,11 +6,17 @@ Page({
    * 页面的初始数据
    */
   data: {
-    mqttData:""
-
+    mqttData:"",
+    rgbValues_1: [],
+    rgbValues_2: [],
+    rgbValues_3: []
   },
   grtmqtt(options) {
 
+  },
+  treatmentTemperature(options) {
+    let arr =that.data.mqttData.temp
+    console.log(arr)
   },
   connectMq(){
     // 连接选项
@@ -36,9 +42,53 @@ Page({
     })
     client.on('message', function (topic, message, packet) {
       that.data.mqttData = packet.payload.toString()
-      console.log(that.data.mqttData)
+      that.data.mqttData =JSON.parse(that.data.mqttData); 
+      // console.log(that.data.mqttData)
+      //转化数据
+      let arr =that.data.mqttData.temp
+      // console.log(arr)
+      //变换温度矩阵
+      let  grayValue
+      let transparency  = new Array(64);
+      for (let i = 0; i < arr.length; ++i) {
+        grayValue=(arr[i]/80)*255
+        transparency[i] = Math.floor(arr[i]) / 80
+        // console.log(grayValue)
+        //温度数值转RGB
+      if (grayValue < 30)
+      {
+        that.data.rgbValues_1[i] = 0;
+        that.data.rgbValues_2[i] = (4 * grayValue);
+        that.data.rgbValues_3[i] = 255;
+      }
+      else if (grayValue >= 30 && grayValue < 80)
+      {
+        that.data.rgbValues_1[i] = 0;
+        that.data.rgbValues_2[i]= 255;
+        that.data.rgbValues_3[i] = (2 * 255 - 4 * grayValue);
+      }
+      else if (grayValue >= 80&& grayValue < 200)
+      {
+        that.data.rgbValues_1[i]= (4 * grayValue-2 * 255 );
+        that.data.rgbValues_2[i] = 255;
+        that.data. rgbValues_3[i] = 0;
+      }
+      else
+      {
+        that.data.rgbValues_1[i] = 255;
+        that.data.rgbValues_2[i]  = (4 * 255 - 4 * grayValue);
+        that.data.rgbValues_3[i] = 0;
+      }
+      }
+      //刷新数据
+      that.setData({
+        mqttData:arr,
+        transparency:transparency,
+        rgbValues_1: that.data.rgbValues_1,
+        rgbValues_2: that.data.rgbValues_2,
+        rgbValues_3: that.data.rgbValues_3
+      })
     })
-
   },
 
   /**
@@ -73,7 +123,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    client.end()
   },
 
   /**

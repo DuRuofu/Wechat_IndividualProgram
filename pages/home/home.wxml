@@ -1,2 +1,10 @@
 <!--pages/home/home.wxml-->
-<van-button type="primary" bind:click="getmqtt">按钮</van-button>
+<view class="a">
+  <view wx:for="{{mqttData}}" class="box" >
+  <!-- style="background-color:rgb({{rgbValues_1[index]}}, {{rgbValues_2[index]}}, {{rgbValues_3[index]}});" -->
+<text class="temp"   style="background-color:rgb(173,255,47,{{1-transparency[index]}})">
+  <!-- {{transparency[index]}} -->
+ {{item}}
+</text>
+</view>
+</view>

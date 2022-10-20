@@ -1,5 +1,4 @@
 // app.js
 App({
-  mqttData:""
 
 })

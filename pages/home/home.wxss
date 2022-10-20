@@ -1,1 +1,17 @@
 /* pages/home/home.wxss */
+.a{
+  width: 100%;
+  background-color: rgb(255, 0, 0,1);
+  height: 960rpx;
+}
+.box{
+  width: 100%;
+  background-color: rgb(255, 0, 0,1);
+}
+.temp{
+  width:12.5% ;
+  height: 120rpx;
+  float: left;
+  /* border-style:solid;
+  border-width:1rpx; */
+}
